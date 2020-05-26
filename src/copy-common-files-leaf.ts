@@ -8,8 +8,8 @@ export const copyCommonFilesLeaf = CliLeaf({
   name: 'copy-common-files',
   description: 'Copy common files from this repository to the target one',
   positionalArgParser: repoNameArgParser,
-  async action(repoName) {
-    const repo = new CarnesenRepo(repoName);
+  async action(name) {
+    const repo = new CarnesenRepo(name);
     consoleLog(`Copying files to ${repo.name}`);
     for (const relativePath of [
       '.github/workflows/test.yml',
