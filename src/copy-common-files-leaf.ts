@@ -12,11 +12,12 @@ export const copyCommonFilesLeaf = CliLeaf({
     const repo = new CarnesenRepo(name);
     consoleLog(`Copying files to ${repo.name}`);
     for (const relativePath of [
+      '.gitattributes',
+      '.gitignore',
       '.github/workflows/test.yml',
       '.npmrc',
       '.nvmrc',
       '.eslintrc.json',
-      '.gitignore',
     ]) {
       consoleLog(`${INDENT}${relativePath}`);
       await repo.copyFromDev(relativePath);
