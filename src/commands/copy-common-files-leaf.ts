@@ -1,10 +1,10 @@
-import { CliLeaf } from '@carnesen/cli';
-import { repoNameArgParser } from './repo-name-arg-parser';
-import { CarnesenRepo } from './carnesen-repo';
-import { consoleLog } from './util';
-import { INDENT } from './constants';
+import { CliCommand } from '@carnesen/cli';
+import { repoNameArgParser } from '../repo-name-arg-parser';
+import { CarnesenRepo } from '../carnesen-repo';
+import { consoleLog } from '../util';
+import { INDENT } from '../constants';
 
-export const copyCommonFilesLeaf = CliLeaf({
+export const copyCommonFilesLeaf = CliCommand({
   name: 'copy-common-files',
   description: 'Copy common files from this repository to the target one',
   positionalArgParser: repoNameArgParser,

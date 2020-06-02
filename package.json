@@ -19,23 +19,23 @@
     "unit-test": "cross-env NODE_ENV=test jest src"
   },
   "dependencies": {
-    "@carnesen/cli": "0.5.0-3",
+    "@carnesen/cli": "0.5.0-5",
     "@types/mkdirp": "1.0.0",
     "cpy": "8.1.0",
     "mkdirp": "1.0.4",
     "parse-json": "5.0.0"
   },
   "devDependencies": {
-    "@carnesen/tsconfig": "0.2.0",
+    "@carnesen/tsconfig": "0.3.1",
     "@types/jest": "25.2.3",
-    "@types/node": "^14.0.5",
+    "@types/node": "14.0.9",
     "cross-env": "7.0.2",
     "eslint": "7.1.0",
-    "eslint-config-carnesen": "2.0.0",
+    "eslint-config-carnesen": "3.0.0",
     "jest": "26.0.1",
     "rimraf": "3.0.2",
-    "ts-jest": "26.0.0",
-    "ts-node": "8.10.1",
+    "ts-jest": "26.1.0",
+    "ts-node": "8.10.2",
     "typescript": "3.9.3"
   },
   "repository": {
