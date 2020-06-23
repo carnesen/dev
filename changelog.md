@@ -1,3 +1,6 @@
-# `@carnesen/dev` change log
+# `@carnesen/dev` changelog
 
 ## [UNRELEASED]
+New commands:
+- repos list
+- repos clone

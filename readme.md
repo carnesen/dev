@@ -1,6 +1,6 @@
-# @carnesen/dev [![build status badge](https://github.com/carnesen/redirector/workflows/test/badge.svg)](https://github.com/carnesen/redirector/actions?query=workflow%3Atest+branch%3Amaster)
+# @carnesen/dev [![build status badge](https://github.com/carnesen/dev/workflows/test/badge.svg)](https://github.com/carnesen/dev/actions?query=workflow%3Atest+branch%3Amaster)
 
-A command-line interface (CLI) for @carnesen projects
+A command-line interface (CLI) for developing @carnesen projects
 
 ## Usage
 ## More information
@@ -8,7 +8,7 @@ This library doesn't have many unit tests, but I use it on a semi-regular basis 
 
 ## Related
 - [@carnesen/carnesen-dot-com](https://github.com/carnesen/carnesen-dot-com): Automates deployment of carnesen.com to Google Cloud Platform
-- [@carnesen/cli](https://github.com/carnesen/cli): A library for building Node.js command-line interfaces
+- [@carnesen/cli](https://github.com/carnesen/cli): A library for building command-line interfaces in Node.js and the browser
 
 ## License
 MIT © [Chris Arnesen](https://www.carnesen.com)
