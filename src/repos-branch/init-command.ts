@@ -4,8 +4,8 @@ import { CarnesenRepo } from '../carnesen-repo';
 import { consoleLog } from '../util';
 import { INDENT } from '../constants';
 
-export const initNewCommand = CliCommand({
-	name: 'init-new',
+export const initCommand = CliCommand({
+	name: 'init',
 	description: 'Copy common files from this repository to the target one',
 	namedArgGroups: {
 		username: usernameArgGroup,
@@ -15,12 +15,18 @@ export const initNewCommand = CliCommand({
 		const repo = new CarnesenRepo(username, name);
 		consoleLog(`Copying files to ${repo.name}`);
 		for (const relativePath of [
+			'.github/workflows/test.yml',
+			'src/index.ts',
+			'.eslintrc.json',
 			'.gitattributes',
 			'.gitignore',
-			'.github/workflows/test.yml',
 			'.npmrc',
 			'.nvmrc',
-			'.eslintrc.json',
+			'changelog.md',
+			'jest.config.js',
+			'license.txt',
+			'package.json',
+			'tsconfig.json',
 		]) {
 			consoleLog(`${INDENT}${relativePath}`);
 			await repo.copyFromDev(relativePath);
