@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { CliCommand } from '@carnesen/cli';
-import { usernameArgGroup, repoNameArgGroup } from '../../arg-groups';
-import { CarnesenRepo } from '../../carnesen-repo';
+import { usernameArgGroup, repoNameArgGroup } from '../arg-groups';
+import { CarnesenRepo } from '../carnesen-repo';
 
 export const cloneCommand = CliCommand({
 	name: 'clone',

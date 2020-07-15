@@ -3,6 +3,13 @@
 A command-line interface (CLI) for developing @carnesen projects
 
 ## Usage
+Clone this repository, `cd` into it and do:
+```
+npm install
+npm run build
+node lib/
+```
+
 ## More information
 This library doesn't have many unit tests, but I use it on a semi-regular basis to manage my personal projects [https://github.com/carnesen/](https://github.com/carnesen/). If you have any questions, please don't hesitate to file an issue or submit a pull request on this project's repository on GitHub.
 

@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { CliCommand } from '@carnesen/cli';
-import { usernameArgGroup } from '../../arg-groups';
+import { usernameArgGroup } from '../arg-groups';
 
 export const listCommand = CliCommand({
 	name: 'list',
