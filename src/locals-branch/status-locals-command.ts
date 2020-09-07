@@ -8,8 +8,9 @@ export const statusLocalsCommand = CliCommand({
 		const repos = GithubRepo.Locals({ console });
 		for (const repo of repos) {
 			const status = await repo.status();
+			const branch = await repo.branch();
 			if (status) {
-				console.log(ansi.blue(repo.id));
+				console.log(`${ansi.blue(repo.id)}: ${branch}`);
 				console.log(status);
 				console.log('');
 			}
