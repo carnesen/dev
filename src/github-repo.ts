@@ -102,6 +102,10 @@ export class GithubRepo {
 		return result.trim();
 	}
 
+	public async branch(): Promise<string> {
+		return await this.gitSubprocess('branch', '--show-current');
+	}
+
 	public async status(): Promise<string> {
 		return await this.gitSubprocess('status', '--porcelain');
 	}
