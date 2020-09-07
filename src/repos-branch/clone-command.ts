@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { CliCommand } from '@carnesen/cli';
-import { usernameArgGroup, repoNameArgGroup } from '../../arg-groups';
-import { CarnesenRepo } from '../../carnesen-repo';
+import { usernameArgGroup, repoNameArgGroup } from '../arg-groups';
+import { CarnesenRepo } from '../carnesen-repo';
 
 export const cloneCommand = CliCommand({
 	name: 'clone',
@@ -10,7 +10,7 @@ export const cloneCommand = CliCommand({
 		username: usernameArgGroup,
 		name: repoNameArgGroup,
 	},
-	async action(_, { username, name }) {
+	async action({ namedValues: { username, name } }) {
 		let repos: CarnesenRepo[];
 		if (name === 'all') {
 			const octokit = new Octokit();

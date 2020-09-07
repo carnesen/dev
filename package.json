@@ -6,49 +6,44 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "bin": {
-    "dv": "lib/cli.js"
+    "dev": "lib/cli.js"
   },
   "engines": {
     "node": ">=10.0.0"
   },
   "scripts": {
-    "build": "rimraf lib && tsc",
+    "build": "rm -rf lib && tsc",
+    "cli": "node lib",
+    "dev": "ts-node src",
     "lint": "eslint --ext .ts src/",
     "fix": "npm run lint -- --fix",
     "test": "npm run lint && npm run unit-test && npm run build",
-    "unit-test": "cross-env NODE_ENV=test jest src"
+    "unit-test": "NODE_ENV=test jest src"
   },
   "dependencies": {
-    "@carnesen/cli": "0.5.0-18",
-    "@octokit/rest": "18.0.0",
+    "@carnesen/cli": "0.5.0-26",
+    "@octokit/rest": "18.0.5",
     "@types/mkdirp": "1.0.1",
-    "cpy": "8.1.0",
-    "mkdirp": "1.0.4",
-    "parse-json": "5.0.0"
+    "mkdirp": "1.0.4"
   },
   "devDependencies": {
-    "@carnesen/tsconfig": "0.3.1",
-    "@types/jest": "26.0.0",
-    "@types/node": "14.0.13",
-    "cross-env": "7.0.2",
-    "eslint": "7.3.1",
-    "eslint-config-carnesen": "4.0.1",
-    "jest": "26.0.1",
-    "rimraf": "3.0.2",
-    "ts-jest": "26.1.1",
-    "ts-node": "8.10.2",
-    "typescript": "3.9.5"
+    "@carnesen/tsconfig": "0.4.0",
+    "@types/jest": "26.0.13",
+    "@types/node": "14.6.4",
+    "eslint": "7.8.1",
+    "eslint-config-carnesen": "4.6.0",
+    "jest": "26.4.2",
+    "ts-jest": "26.3.0",
+    "ts-node": "9.0.0",
+    "typescript": "4.0.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/carnesen/dev.git"
-  },
+  "repository": "github:carnesen/dev",
   "author": "Chris Arnesen",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/carnesen/dev/issues"
   },
-  "homepage": "https://github.com/carnesen/dev",
+  "homepage": "https://github.com/carnesen/dev#readme",
   "files": [
     "src",
     "lib"

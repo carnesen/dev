@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { CliCommand } from '@carnesen/cli';
-import { usernameArgGroup } from '../../arg-groups';
+import { usernameArgGroup } from '../arg-groups';
 
 export const listCommand = CliCommand({
 	name: 'list',
@@ -8,7 +8,7 @@ export const listCommand = CliCommand({
 	namedArgGroups: {
 		username: usernameArgGroup,
 	},
-	async action(_, { username }) {
+	async action({ namedValues: { username } }) {
 		const octokit = new Octokit();
 		const { data } = await octokit.repos.listForUser({ username });
 		return data.map((datum: any) => datum.full_name);

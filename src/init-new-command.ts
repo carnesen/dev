@@ -1,8 +1,8 @@
 import { CliCommand } from '@carnesen/cli';
-import { repoNameArgGroup, usernameArgGroup } from '../arg-groups';
-import { CarnesenRepo } from '../carnesen-repo';
-import { consoleLog } from '../util';
-import { INDENT } from '../constants';
+import { repoNameArgGroup, usernameArgGroup } from './arg-groups';
+import { CarnesenRepo } from './carnesen-repo';
+import { consoleLog } from './util';
+import { INDENT } from './constants';
 
 export const initNewCommand = CliCommand({
 	name: 'init-new',
@@ -11,7 +11,7 @@ export const initNewCommand = CliCommand({
 		username: usernameArgGroup,
 		name: repoNameArgGroup,
 	},
-	async action(_, { username, name }) {
+	async action({ namedValues: { username, name } }) {
 		const repo = new CarnesenRepo(username, name);
 		consoleLog(`Copying files to ${repo.name}`);
 		for (const relativePath of [

@@ -1,4 +1,4 @@
-import { CliStringArgGroup, CliOneOfArgGroup } from '@carnesen/cli';
+import { CliStringArgGroup, CliStringChoiceArgGroup } from '@carnesen/cli';
 import { CARNESEN, CARNESEN_ARCHIVE } from './constants';
 
 export const repoNameArgGroup = CliStringArgGroup({
@@ -6,9 +6,9 @@ export const repoNameArgGroup = CliStringArgGroup({
 	required: true,
 });
 
-export const usernameArgGroup = CliOneOfArgGroup({
+export const usernameArgGroup = CliStringChoiceArgGroup({
 	required: true,
-	values: [
+	choices: [
 		CARNESEN as typeof CARNESEN,
 		CARNESEN_ARCHIVE as typeof CARNESEN_ARCHIVE,
 	],
