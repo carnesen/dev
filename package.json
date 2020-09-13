@@ -20,7 +20,7 @@
 		"unit-test": "NODE_ENV=test jest src"
 	},
 	"dependencies": {
-		"@carnesen/cli": "0.5.0-26",
+		"@carnesen/cli": "0.5.0",
 		"@octokit/rest": "18.0.5",
 		"mkdirp": "1.0.4",
 		"signal-exit": "3.0.3"
@@ -29,9 +29,9 @@
 		"@carnesen/tsconfig": "0.4.0",
 		"@types/jest": "26.0.13",
 		"@types/mkdirp": "1.0.1",
-		"@types/node": "14.6.4",
+		"@types/node": "14.10.1",
 		"@types/signal-exit": "3.0.0",
-		"eslint": "7.8.1",
+		"eslint": "7.9.0",
 		"eslint-config-carnesen": "4.6.0",
 		"jest": "26.4.2",
 		"ts-jest": "26.3.0",
