@@ -3,12 +3,23 @@ import signalExit = require('signal-exit');
 import { CliTerseError, ICliAnsi, CliAnsi } from '@carnesen/cli';
 
 export type IRunSubprocessOptions = {
+	/** A ANSI terminal output decoration object */
 	ansi?: ICliAnsi;
+	/** Arguments passed to the program invocation */
 	args?: string[];
+	/** Current working directory from which to spawn the subprocess */
 	cwd?: string;
 };
 
-export async function runSubprocess(
+/**
+ * Spawn a child process, collecting its output in memory until it terminates.
+ * @param exe Executable program name e.g. "git"
+ * @param options Optional execution configuration e.g. arguments, cwd
+ * @throws CliTerseError with a message including the child's interleaved
+ * stdout+stderr if it exits non-zero
+ * @returns The child's accumulated standard output
+ */
+export async function runBackground(
 	exe: string,
 	options: IRunSubprocessOptions = {},
 ): Promise<string> {
@@ -49,7 +60,7 @@ export async function runSubprocess(
 				}
 			} else {
 				let message = `Process exited with non-zero status code ${ansi.bold(
-					code.toString(),
+					String(code),
 				)}`;
 				message += '\n\n';
 				message += `$ ${exe} ${args.join(' ')}`;

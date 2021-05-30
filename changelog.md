@@ -1,6 +1,8 @@
 # `@carnesen/dev` changelog
 
-## [UNRELEASED]
+## Unreleased
+
 New commands:
+- publish
 - repos list
 - repos clone
