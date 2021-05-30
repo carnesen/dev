@@ -11,6 +11,7 @@ import { THIS_PROJECT_DIR, USERNAMES } from './constants';
 import { runForeground } from './run-foreground';
 import { runBackground } from './run-background';
 import { prepareNextChangelog } from './prepare-next-changelog';
+import { LocalToday } from './local-today';
 
 export interface GithubRepoOptions {
 	console?: ICliConsole;
@@ -28,7 +29,9 @@ export class GithubRepo {
 
 	public readonly id: string;
 
-	public static BaseDir = path.join(os.homedir(), 'GitHub');
+	public static readonly BaseDir = path.join(os.homedir(), 'GitHub');
+
+	public static readonly DefaultBranches = ['master', 'main'];
 
 	public static Remotes = async (
 		options: GithubRepoOptions,
@@ -151,6 +154,37 @@ export class GithubRepo {
 
 	public async status(): Promise<string> {
 		return await this.gitBackground('status', '--porcelain');
+	}
+
+	/**
+	 * Create a PR and merge it when checks pass
+	 * @param options
+	 */
+	public async pr(): Promise<void> {
+		// Start by committing the code on a new branch
+		const originalBranch = await this.branch();
+		if (GithubRepo.DefaultBranches.includes(originalBranch)) {
+			const newBranch = `ca-${LocalToday()}`;
+			this.gitForeground('switch', '-c', newBranch);
+		}
+		this.gitForeground('add', '.');
+		this.gitForeground('commit');
+
+		this.ghForeground('pr', 'create', '--fill');
+
+		// Wait for a few seconds to give the workflow a chance to start
+		this.console.log(
+			'Waiting a few seconds for the GitHub Actions workflow to start',
+		);
+		await new Promise((resolve) => setTimeout(resolve, 5000));
+
+		this.ghForeground('run', 'watch');
+
+		this.ghForeground('pr', 'merge');
+
+		this.gitForeground('switch', originalBranch);
+
+		this.gitForeground('pull');
 	}
 
 	/**
