@@ -1,7 +1,7 @@
+import fs = require('fs');
 import path = require('path');
 import os = require('os');
 import mkdirp = require('mkdirp');
-import fs = require('fs');
 
 import { ICliConsole } from '@carnesen/cli';
 import { CliConsole } from '@carnesen/cli/lib/cli-console';
@@ -9,10 +9,18 @@ import { Octokit } from '@octokit/rest';
 
 import { THIS_PROJECT_DIR, USERNAMES } from './constants';
 import { runForeground } from './run-foreground';
-import { runSubprocess } from './run-subprocess';
+import { runBackground } from './run-background';
+import { prepareNextChangelog } from './prepare-next-changelog';
 
-export interface IGithubRepoOptions {
+export interface GithubRepoOptions {
 	console?: ICliConsole;
+}
+
+export interface GithubRepoPublishOptions {
+	/** SemVer segment to bump */
+	bump: 'patch' | 'minor' | 'major';
+	/** If true, only publish to GitHub */
+	skipNpm?: boolean;
 }
 
 export class GithubRepo {
@@ -23,7 +31,7 @@ export class GithubRepo {
 	public static BaseDir = path.join(os.homedir(), 'GitHub');
 
 	public static Remotes = async (
-		options: IGithubRepoOptions,
+		options: GithubRepoOptions,
 	): Promise<GithubRepo[]> => {
 		const octokit = new Octokit();
 		const repos: GithubRepo[] = [];
@@ -36,7 +44,7 @@ export class GithubRepo {
 		return repos;
 	};
 
-	public static Locals = (options: IGithubRepoOptions): GithubRepo[] => {
+	public static Locals = (options: GithubRepoOptions): GithubRepo[] => {
 		const repos: GithubRepo[] = [];
 		if (!fs.existsSync(GithubRepo.BaseDir)) {
 			return repos;
@@ -57,7 +65,7 @@ export class GithubRepo {
 		return repos;
 	};
 
-	constructor(id: string, options: IGithubRepoOptions = {}) {
+	constructor(id: string, options: GithubRepoOptions = {}) {
 		this.console = options.console || CliConsole();
 		this.id = id;
 	}
@@ -66,8 +74,15 @@ export class GithubRepo {
 		return this.id.split('/');
 	}
 
-	private dir(): string {
-		return path.join(GithubRepo.BaseDir, ...this.parts());
+	/**
+	 * Get the fully qualified path of this repository or one if its
+	 * subdirectories
+	 * @param parts Additional path segments to join in beyond the repo root
+	 * @returns The fully qualified path of this repo or one of its
+	 * subdirectories
+	 */
+	private path(...parts: string[]): string {
+		return path.join(GithubRepo.BaseDir, ...this.parts(), ...parts);
 	}
 
 	/**
@@ -76,7 +91,7 @@ export class GithubRepo {
 	 */
 	public copyFromDev(relativePath: string): void {
 		const source = path.join(THIS_PROJECT_DIR, relativePath);
-		const destination = path.join(this.dir(), relativePath);
+		const destination = path.join(this.path(), relativePath);
 		mkdirp.sync(path.dirname(destination));
 		fs.copyFileSync(source, destination);
 	}
@@ -85,28 +100,134 @@ export class GithubRepo {
 	 * Clone this repository to this.path if it doesn't already exist
 	 */
 	public clone(): void {
-		if (fs.existsSync(this.dir())) {
+		if (fs.existsSync(this.path())) {
 			this.console.log(`repo:${this.id} already exists`);
 			return;
 		}
-		const parentDir = path.dirname(this.dir());
+		const parentDir = path.dirname(this.path());
 		mkdirp.sync(parentDir);
 		const sshUrl = `git@github.com:${this.id}.git`;
 		this.console.log(`repo:${this.id} cloning ...`);
 		runForeground('git', { args: ['clone', sshUrl], cwd: parentDir });
 		this.console.log(`repo:${this.id} cloned`);
+		if (fs.existsSync(this.path('package-lock.json'))) {
+			this.console.log('Found package-lock.json. Running "npm ci".');
+			this.npmForeground('ci');
+		} else if (fs.existsSync(this.path('package.json'))) {
+			this.console.log(
+				'Found package.json but not package-lock.json. Running "npm install".',
+			);
+			this.npmForeground('install');
+		}
 	}
 
-	private async gitSubprocess(...args: string[]): Promise<string> {
-		const result = await runSubprocess('git', { args, cwd: this.dir() });
+	private async npmBackground(...args: string[]): Promise<string> {
+		return await runBackground('npm', { args, cwd: this.path() });
+	}
+
+	private npmForeground(...args: string[]) {
+		this.console.log(`Running "npm ${args.join(' ')}"`);
+		runForeground('npm', { args, cwd: this.path() });
+	}
+
+	private async gitBackground(...args: string[]): Promise<string> {
+		const result = await runBackground('git', { args, cwd: this.path() });
 		return result.trim();
 	}
 
+	private gitForeground(...args: string[]): void {
+		this.console.log(`Running "git ${args.join(' ')}"`);
+		runForeground('git', { args, cwd: this.path() });
+	}
+
+	private ghForeground(...args: string[]): void {
+		this.console.log(`Running "gh ${args.join(' ')}"`);
+		runForeground('gh', { args, cwd: this.path() });
+	}
+
 	public async branch(): Promise<string> {
-		return await this.gitSubprocess('branch', '--show-current');
+		return await this.gitBackground('branch', '--show-current');
 	}
 
 	public async status(): Promise<string> {
-		return await this.gitSubprocess('status', '--porcelain');
+		return await this.gitBackground('status', '--porcelain');
+	}
+
+	/**
+	 * Publish a project package to GitHub and the npm registry
+	 * @param options
+	 */
+	public async publish(options: GithubRepoPublishOptions): Promise<void> {
+		const { bump, skipNpm } = options;
+		/** The new semantic version prepended with "v" e.g. v0.1.2. */
+		const releaseName = await this.npmBackground(
+			'version',
+			bump,
+			'--no-git-tag-version',
+		);
+
+		const changelogPath = this.path('changelog.md');
+		const changelog = fs.readFileSync(changelogPath, {
+			encoding: 'utf8',
+		});
+
+		const { nextChangelog, releaseNotes, releaseTitle } = prepareNextChangelog({
+			changelog,
+			releaseName,
+		});
+
+		fs.writeFileSync(changelogPath, nextChangelog);
+
+		// The --no-git-tag-version above disabled all Git actions, not just the
+		// tagging. We'll create the commit now and push it later.
+		this.gitForeground('add', '.');
+		this.gitForeground('commit', '--message', releaseName);
+
+		// Reinstall dependencies to make sure they're up to date
+		this.npmForeground('ci');
+
+		// You'll be prompted for your 2FA one-time password (OTP). "npm test"
+		// should already run as part of the npm "prePublish" step.
+		if (!skipNpm) {
+			this.npmForeground('publish');
+		}
+
+		// Create the release tag and push it.
+		this.gitForeground('tag', releaseName);
+		this.gitForeground('push', 'origin', `refs/tags/${releaseName}`);
+
+		// Wait for a few seconds to give the workflow a chance to start
+		this.console.log(
+			'Waiting a few seconds for the GitHub Actions workflow to start',
+		);
+		await new Promise((resolve) => setTimeout(resolve, 5000));
+
+		// Wait for GitHub Actions workflow to complete
+		this.ghForeground('run', 'watch');
+
+		// Create GitHub "release"
+		this.ghForeground(
+			'release',
+			'create',
+			releaseName,
+			'--title',
+			releaseTitle,
+			'--notes',
+			releaseNotes,
+		);
+
+		// Push the commit to the branch. Previously we only pushed the tag.
+		this.gitForeground('push');
+	}
+
+	public static fromCwd(): GithubRepo {
+		const cwd = process.cwd();
+		if (!cwd.startsWith(GithubRepo.BaseDir)) {
+			throw new Error(
+				`Your current working directory is not a GitHub repository. Please cd to ${GithubRepo.BaseDir}`,
+			);
+		}
+		const id = cwd.slice(GithubRepo.BaseDir.length);
+		return new GithubRepo(id);
 	}
 }
