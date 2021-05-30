@@ -182,8 +182,6 @@ export class GithubRepo {
 
 		this.ghForeground('pr', 'merge');
 
-		this.gitForeground('switch', originalBranch);
-
 		this.gitForeground('pull');
 	}
 
