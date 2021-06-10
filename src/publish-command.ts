@@ -1,13 +1,17 @@
 import {
 	CliCommand,
-	CliFlagArgGroup,
 	CliStringArgGroup,
 	CliStringChoiceArgGroup,
 } from '@carnesen/cli';
 
 import { GithubRepo } from './github-repo';
 
-const BUMP_CHOICES = ['patch' as const, 'minor' as const, 'major' as const];
+const BUMP_CHOICES = [
+	'patch' as const,
+	'minor' as const,
+	'major' as const,
+	'none' as const,
+];
 
 export const publishCommand = CliCommand({
 	name: 'publish',
@@ -20,14 +24,9 @@ export const publishCommand = CliCommand({
 			required: true,
 			choices: BUMP_CHOICES,
 		}),
-		skipNpm: CliFlagArgGroup(),
 	},
-	async action({
-		namedValues: { bump, skipNpm },
-		positionalValue: id,
-		console,
-	}) {
+	async action({ namedValues: { bump }, positionalValue: id, console }) {
 		const repo = id ? new GithubRepo(id, { console }) : GithubRepo.fromCwd();
-		await repo.publish({ bump, skipNpm });
+		await repo.publish({ bump });
 	},
 });
