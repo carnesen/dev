@@ -12,6 +12,7 @@ import { runForeground } from './run-foreground';
 import { runBackground } from './run-background';
 import { prepareNextChangelog } from './prepare-next-changelog';
 import { LocalToday } from './local-today';
+import { PackageJson, packageJsonSchema } from './package-json';
 
 export interface GithubRepoOptions {
 	console?: ICliConsole;
@@ -19,9 +20,7 @@ export interface GithubRepoOptions {
 
 export interface GithubRepoPublishOptions {
 	/** SemVer segment to bump */
-	bump: 'patch' | 'minor' | 'major';
-	/** If true, only publish to GitHub */
-	skipNpm?: boolean;
+	bump: 'patch' | 'minor' | 'major' | 'none';
 }
 
 export class GithubRepo {
@@ -133,6 +132,15 @@ export class GithubRepo {
 		runForeground('npm', { args, cwd: this.path() });
 	}
 
+	private packageJson(): PackageJson {
+		const str = fs.readFileSync(this.path('package.json'), {
+			encoding: 'utf8',
+		});
+
+		const json = JSON.parse(str);
+		return packageJsonSchema.parse(json);
+	}
+
 	private async gitBackground(...args: string[]): Promise<string> {
 		const result = await runBackground('git', { args, cwd: this.path() });
 		return result.trim();
@@ -190,13 +198,19 @@ export class GithubRepo {
 	 * @param options
 	 */
 	public async publish(options: GithubRepoPublishOptions): Promise<void> {
-		const { bump, skipNpm } = options;
+		const { bump } = options;
+		const packageJson = this.packageJson();
 		/** The new semantic version prepended with "v" e.g. v0.1.2. */
-		const releaseName = await this.npmBackground(
-			'version',
-			bump,
-			'--no-git-tag-version',
-		);
+		let releaseName: string;
+		if (bump === 'none') {
+			releaseName = `v${packageJson.version}`;
+		} else {
+			releaseName = await this.npmBackground(
+				'version',
+				bump,
+				'--no-git-tag-version',
+			);
+		}
 
 		const changelogPath = this.path('changelog.md');
 		const changelog = fs.readFileSync(changelogPath, {
@@ -218,9 +232,10 @@ export class GithubRepo {
 		// Reinstall dependencies to make sure they're up to date
 		this.npmForeground('ci');
 
-		// You'll be prompted for your 2FA one-time password (OTP). "npm test"
-		// should already run as part of the npm "prePublish" step.
-		if (!skipNpm) {
+		this.npmForeground('test');
+
+		if (!packageJson.private) {
+			// You'll be prompted for your 2FA one-time password (OTP).
 			this.npmForeground('publish');
 		}
 
