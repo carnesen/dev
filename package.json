@@ -13,9 +13,10 @@
 	},
 	"scripts": {
 		"build": "rm -rf lib && tsc",
-		"start": "ts-node src/",
-		"lint": "eslint --ext .ts src/",
-		"fix": "npm run lint -- --fix",
+		"dev": "ts-node src",
+		"lint": "eslint --ext .ts src",
+		"lint-fix": "npm run lint -- --fix",
+		"start": "node lib",
 		"test": "npm run lint && npm run unit-test && npm run build",
 		"unit-test": "NODE_ENV=test jest src"
 	},
