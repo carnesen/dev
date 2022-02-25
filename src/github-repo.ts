@@ -38,7 +38,7 @@ export class GithubRepo extends LocalDirectory {
 
 	private gitForeground(...args: string[]): void {
 		logger.log(`Running "git ${args.join(' ')}"`);
-		runForeground('git', { args, cwd: this.resolvePath() });
+		this.runForeground('git', ...args);
 	}
 
 	private ghForeground(...args: string[]): void {
@@ -127,7 +127,7 @@ export class GithubRepo extends LocalDirectory {
 		}
 
 		// Push the commit to the branch. Previously we only pushed the tag.
-		this.gitForeground('push');
+		this.gitForeground('push', '--set-upstream', 'origin', this.branch());
 	}
 
 	public static readonly BaseDir = path.join(os.homedir(), 'GitHub');
