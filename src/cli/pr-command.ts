@@ -1,6 +1,6 @@
 import { CliCommand } from '@carnesen/cli';
 
-import { GithubRepo } from './github-repo';
+import { GithubRepo } from '../github-repo';
 
 export const prCommand = CliCommand({
 	name: 'pr',

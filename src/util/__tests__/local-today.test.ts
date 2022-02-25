@@ -5,7 +5,7 @@ describe(LocalToday.name, () => {
 	it('Generates a YYYY-MM-DD timestamp', async () => {
 		const localToday = LocalToday();
 		expect(localToday).toMatch(/\d\d\d\d-\d\d-\d\d/);
-		const alsoLocalToday = await runBackground('date', { args: ['+%F'] });
+		const alsoLocalToday = runBackground('date', { args: ['+%F'] });
 		expect(localToday).toBe(alsoLocalToday);
 	});
 });

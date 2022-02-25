@@ -1,6 +1,6 @@
 import { CliCommand, CliStringArgGroup } from '@carnesen/cli';
-import { GithubRepo } from '../github-repo';
-import { INDENT } from '../constants';
+import { INDENT } from '../../constants';
+import { LocalDirectory } from '../../local-directory';
 
 export const initLocalsCommand = CliCommand({
 	name: 'init',
@@ -10,8 +10,8 @@ export const initLocalsCommand = CliCommand({
 		placeholder: '<id>',
 	}),
 	async action({ positionalValue: id, console }) {
-		const repo = new GithubRepo(id, { console });
-		console.log(`Copying files to ${repo.id}`);
+		const localDirectory = new LocalDirectory(id);
+		console.log(`Copying files to ${id}`);
 		for (const relativePath of [
 			'.github/workflows/test.yml',
 			'src/index.ts',
@@ -27,7 +27,7 @@ export const initLocalsCommand = CliCommand({
 			'tsconfig.json',
 		]) {
 			console.log(`${INDENT}${relativePath}`);
-			await repo.copyFromDev(relativePath);
+			await localDirectory.copyFileToHereFromCarnesenDev(relativePath);
 		}
 	},
 });

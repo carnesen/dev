@@ -2,8 +2,8 @@ import { LocalToday } from './local-today';
 
 export interface PrepareNextChangelogOptions {
 	/** A markdown changelog */
-	changelog: string;
-	/** A release name e.g. "v0.1.2" */
+	changelog: string | undefined;
+	/** A release name e.g. "foo-bar-0.1.2" */
 	releaseName: string;
 }
 
@@ -19,10 +19,12 @@ const UPCOMING = 'Upcoming';
 
 const UPCOMING_PART = `${UPCOMING}\n`;
 
-export function prepareNextChangelog({
-	changelog,
-	releaseName,
-}: PrepareNextChangelogOptions): PrepareNextChangelogResult {
+const DEFAULT_INITIAL_CHANGELOG = `# changelog\n${SUBSECTION_HEADER_IDENTIFIER}${UPCOMING_PART}`;
+
+export function prepareNextChangelog(
+	options: PrepareNextChangelogOptions,
+): PrepareNextChangelogResult {
+	const { changelog = DEFAULT_INITIAL_CHANGELOG, releaseName } = options;
 	const parts = changelog.split(SUBSECTION_HEADER_IDENTIFIER);
 	if (parts.length < 2) {
 		throw new Error(
