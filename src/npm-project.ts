@@ -2,6 +2,7 @@ import { kebabCase } from 'lodash';
 import fs = require('fs');
 import {
 	CHANGELOG_FILE_NAME,
+	INDENT,
 	LICENSE_FILE_NAME,
 	PACKAGE_JSON_FILE_NAME,
 	PACKAGE_LOCK_FILE_NAME,
@@ -15,6 +16,7 @@ import { logger } from './util/logger';
 import { prepareNextLicense } from './util/prepare-next-license';
 import { ReleaseSpec } from './types/release-spec';
 import { LicenseName } from './types/license-name';
+import { prepareNextDateSemver } from './util/prepare-next-date-semver';
 
 export class NpmProject extends LocalDirectory {
 	constructor(dir = '.') {
@@ -31,6 +33,11 @@ export class NpmProject extends LocalDirectory {
 	}
 
 	private packageJson(): PackageJson {
+		const json = this.rawPackageJson();
+		return packageJsonSchema.parse(json);
+	}
+
+	private rawPackageJson(): any {
 		const contents = this.readFile(PACKAGE_JSON_FILE_NAME);
 		if (!contents) {
 			throw new Error(
@@ -38,7 +45,7 @@ export class NpmProject extends LocalDirectory {
 			);
 		}
 		const json = JSON.parse(contents);
-		return packageJsonSchema.parse(json);
+		return json;
 	}
 
 	public npmCi(): void {
@@ -73,10 +80,32 @@ export class NpmProject extends LocalDirectory {
 			throw new Error(`Expected to find ${LICENSE_FILE_NAME}`);
 		}
 		const nextLicense = prepareNextLicense(license);
-		this.writeFile(LICENSE_FILE_NAME, nextLicense);
+		if (nextLicense !== license) {
+			this.writeFile(LICENSE_FILE_NAME, nextLicense);
+		}
 
-		if (semverBump !== 'none') {
-			this.npmBackground('version', semverBump, '--no-git-tag-version');
+		switch (semverBump) {
+			case 'date':
+			case 'predate': {
+				// Read the package.json file type-safely first
+				const pkg = this.packageJson();
+				// Now read the full "raw" one for re-write
+				const rawPkg = this.rawPackageJson();
+				rawPkg.version = prepareNextDateSemver(pkg.version);
+				this.writeFile(
+					PACKAGE_JSON_FILE_NAME,
+					`${JSON.stringify(rawPkg, null, INDENT)}\n`,
+				);
+				break;
+			}
+			case 'none': {
+				// Do nothing
+				break;
+			}
+			default: {
+				this.npmBackground('version', semverBump, '--no-git-tag-version');
+				break;
+			}
 		}
 
 		const pkg = this.packageJson();
@@ -88,7 +117,7 @@ export class NpmProject extends LocalDirectory {
 			releaseName,
 		});
 
-		if (semverBump !== 'prerelease') {
+		if (!semverBump.startsWith('pre')) {
 			this.writeFile(CHANGELOG_FILE_NAME, nextChangelog);
 		}
 

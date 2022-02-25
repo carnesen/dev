@@ -75,7 +75,7 @@ In <inDir>/<project> for each <project>:
 
 * Run "npm version" to bump the package.json version unless semverBump="none"
 
-* If bump is not "prerelease", update ${CHANGELOG_FILE_NAME} replacing 
+* If bump does not start with "pre", update ${CHANGELOG_FILE_NAME} replacing 
 "Upcoming" with the current release name and today's date
 
 * Copy ${PROJECT_FILE_NAMES.join(', ')} to <outDir>/<inDir>/<project>
@@ -84,7 +84,7 @@ In <outDir>/<inDir>/<project> for each <project>:
 
 * If private is not \`true\` in package.json, run "npm publish"
 
-If bump is not "prerelease", at the top level of the repository:
+If bump does not start with "pre", at the top level of the repository:
 
 * Create a new commit from "." with message e.g. "project0-0.1.2 project1-0.1.2"
 
@@ -110,7 +110,7 @@ If bump is not "prerelease", at the top level of the repository:
 			outNpmProject.npmPublish();
 			return releaseSpec;
 		});
-		if (semverBump !== 'prerelease') {
+		if (!semverBump.startsWith('pre')) {
 			const gitRepo = GithubRepo.fromCwd();
 			gitRepo.commitTagPushRelease(releaseSpecs);
 		}

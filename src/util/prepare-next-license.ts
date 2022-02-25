@@ -1,5 +1,5 @@
 import { LicenseName } from '../types/license-name';
-import { currentFullYearFactory } from './current-full-year-factory';
+import { nowYearFactory } from './now-year-factory';
 import { mitLicenseFactory, MIT_LICENSE_HEADER } from './mit-license-factory';
 import {
 	proprietaryLicenseFactory,
@@ -10,7 +10,7 @@ export function prepareNextLicense(
 	license: string,
 	licenseName?: LicenseName,
 ): string {
-	const currentFullYear = currentFullYearFactory();
+	const nowYear = nowYearFactory();
 	let licenseFactory: (yearRange: string) => string;
 	if (
 		licenseName === 'proprietary' ||
@@ -28,18 +28,18 @@ export function prepareNextLicense(
 	const singleFullYearMatched = license.match(/ ([0-9]{4}) /);
 	if (singleFullYearMatched) {
 		const existingSingleFullYear = singleFullYearMatched[1];
-		if (existingSingleFullYear === currentFullYear) {
-			return licenseFactory(currentFullYear);
+		if (existingSingleFullYear === nowYear) {
+			return licenseFactory(nowYear);
 		}
-		return licenseFactory(`${existingSingleFullYear}-${currentFullYear}`);
+		return licenseFactory(`${existingSingleFullYear}-${nowYear}`);
 	}
 
 	const fullYearRangeMatched = license.match(/ ([0-9]{4})-[0-9]{4} /);
 	if (fullYearRangeMatched) {
 		const [, initialYear] = fullYearRangeMatched;
-		return licenseFactory(`${initialYear}-${currentFullYear}`);
+		return licenseFactory(`${initialYear}-${nowYear}`);
 	}
 
 	// Existing license does not have a year or year range
-	return licenseFactory(currentFullYear);
+	return licenseFactory(nowYear);
 }
