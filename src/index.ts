@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
-import { Cli } from '@carnesen/cli';
-import { rootBranch } from './root-branch';
-
-const cli = Cli(rootBranch);
+import { cli } from './cli';
 
 if (require.main === module) {
 	cli.run();

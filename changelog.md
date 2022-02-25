@@ -1,9 +1,7 @@
-# `@carnesen/dev` changelog
+# **@carnesen/dev changelog
 
-## Unreleased
+## Upcoming
 
-New commands:
-- pr
-- publish
-- repos list
-- repos clone
+## carnesen-dev-0.0.0-4} (2022-02-25)
+
+Initial release
