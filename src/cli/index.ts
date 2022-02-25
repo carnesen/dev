@@ -6,12 +6,14 @@ import { releaseCommand } from './release-command';
 import { prCommand } from './pr-command';
 import { CLI_NAME } from '../constants';
 import { writeLicenseCommand } from './write-license-command';
+import { prepareReleaseCommand } from './prepare-release-command';
 
 const rootBranch = CliCommandGroup({
 	name: CLI_NAME,
 	description: 'A command-line interface (CLI) for @carnesen projects',
 	subcommands: [
 		prCommand,
+		prepareReleaseCommand,
 		releaseCommand,
 		localsBranch,
 		remotesBranch,

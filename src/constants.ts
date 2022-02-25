@@ -23,8 +23,13 @@ export const PROJECT_FILE_NAMES = [
 export const SEMVER_BUMPS = [
 	'none',
 	'prerelease',
+	'preminor',
 	'minor',
+	'premajor',
 	'major',
+	'prepatch',
 	'patch',
+	'predate',
+	'date',
 ] as const;
 export type SemverBump = typeof SEMVER_BUMPS[number];
