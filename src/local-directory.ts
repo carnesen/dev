@@ -59,7 +59,7 @@ export class LocalDirectory {
 		return undefined;
 	}
 
-	protected writeFile(fileName: string, contents: string): void {
+	public writeFile(fileName: string, contents: string): void {
 		fs.writeFileSync(this.resolvePath(fileName), contents);
 		logger.log(`Wrote ${fileName}`);
 	}
