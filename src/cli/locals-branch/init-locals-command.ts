@@ -1,6 +1,14 @@
 import { CliCommand, CliStringArgGroup } from '@carnesen/cli';
-import { INDENT } from '../../constants';
-import { LocalDirectory } from '../../local-directory';
+import path = require('path');
+import {
+	CHANGELOG_FILE_NAME,
+	INDENT,
+	PACKAGE_JSON_FILE_NAME,
+	README_FILE_NAME,
+} from '../../constants';
+import { GithubRepo } from '../../github-repo';
+import { NpmProject } from '../../npm-project';
+import { INITIAL_CHANGELOG } from '../../util/prepare-next-changelog';
 
 export const initLocalsCommand = CliCommand({
 	name: 'init',
@@ -10,7 +18,7 @@ export const initLocalsCommand = CliCommand({
 		placeholder: '<id>',
 	}),
 	async action({ positionalValue: id, console }) {
-		const localDirectory = new LocalDirectory(id);
+		const npmProject = new NpmProject(path.join(GithubRepo.BaseDir, id));
 		console.log(`Copying files to ${id}`);
 		for (const relativePath of [
 			'.github/workflows/test.yml',
@@ -20,14 +28,16 @@ export const initLocalsCommand = CliCommand({
 			'.gitignore',
 			'.npmrc',
 			'.nvmrc',
-			'changelog.md',
+			'cspell.json',
 			'jest.config.js',
-			'license.txt',
-			'package.json',
+			PACKAGE_JSON_FILE_NAME,
+			README_FILE_NAME,
 			'tsconfig.json',
 		]) {
 			console.log(`${INDENT}${relativePath}`);
-			await localDirectory.copyFileToHereFromCarnesenDev(relativePath);
+			await npmProject.copyFileToHereFromCarnesenDev(relativePath);
 		}
+		npmProject.writeLicense('mit');
+		npmProject.writeFile(CHANGELOG_FILE_NAME, INITIAL_CHANGELOG);
 	},
 });

@@ -19,12 +19,12 @@ const UPCOMING = 'Upcoming';
 
 const UPCOMING_PART = `${UPCOMING}\n`;
 
-const DEFAULT_INITIAL_CHANGELOG = `# changelog\n${SUBSECTION_HEADER_IDENTIFIER}${UPCOMING_PART}`;
+export const INITIAL_CHANGELOG = `# changelog\n${SUBSECTION_HEADER_IDENTIFIER}${UPCOMING_PART}`;
 
 export function prepareNextChangelog(
 	options: PrepareNextChangelogOptions,
 ): PrepareNextChangelogResult {
-	const { changelog = DEFAULT_INITIAL_CHANGELOG, releaseName } = options;
+	const { changelog = INITIAL_CHANGELOG, releaseName } = options;
 	const parts = changelog.split(SUBSECTION_HEADER_IDENTIFIER);
 	if (parts.length < 2) {
 		throw new Error(

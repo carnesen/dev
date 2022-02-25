@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+- Fix a fatal bug in "locals init" command
+
 ## carnesen-dev-0.1.0 (2022-02-25)
 
 - Feature: Support standard semantic version bumps "preminor", "prepatch", "premajor"
