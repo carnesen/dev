@@ -80,7 +80,7 @@ export class NpmProject extends LocalDirectory {
 		}
 
 		const pkg = this.packageJson();
-		const releaseName = `${kebabCase(pkg.name)}-${pkg.version}}`;
+		const releaseName = `${kebabCase(pkg.name)}-${pkg.version}`;
 		const changelog = this.readFile(CHANGELOG_FILE_NAME);
 
 		const { nextChangelog, releaseNotes, releaseTitle } = prepareNextChangelog({

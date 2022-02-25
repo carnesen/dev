@@ -1,6 +1,6 @@
 {
 	"name": "@carnesen/dev",
-	"version": "0.0.0-4",
+	"version": "0.0.0-7",
 	"description": "A command-line interface (CLI) for developing @carnesen projects",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",

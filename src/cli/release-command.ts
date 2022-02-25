@@ -97,7 +97,6 @@ If bump is not "prerelease", at the top level of the repository:
 		positionalValue: projectNames = ['.'],
 		namedValues: { semverBump, inDir = '.', outDir = '.' },
 	}) {
-		const cwd = process.cwd();
 		const topLevelNpmProject = new NpmProject();
 		topLevelNpmProject.npmCi();
 		topLevelNpmProject.npmTest();
@@ -112,7 +111,7 @@ If bump is not "prerelease", at the top level of the repository:
 			return releaseSpec;
 		});
 		if (semverBump !== 'prerelease') {
-			const gitRepo = new GithubRepo(cwd);
+			const gitRepo = GithubRepo.fromCwd();
 			gitRepo.commitTagPushRelease(releaseSpecs);
 		}
 	},
