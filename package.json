@@ -1,6 +1,6 @@
 {
 	"name": "@carnesen/dev",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "A command-line interface (CLI) for developing @carnesen projects",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
@@ -18,6 +18,7 @@
 		"dev": "ts-node src",
 		"lint": "eslint --ext .ts src",
 		"lint-fix": "npm run lint -- --fix",
+		"release": "./scripts/release.sh",
 		"start": "node lib",
 		"test": "npm run lint && npm run build && npm run unit-test",
 		"unit-test": "NODE_ENV=test jest src"
@@ -25,14 +26,14 @@
 	"dependencies": {
 		"@carnesen/cli": "^0.5.2",
 		"@octokit/rest": "^18.5.5",
-		"@types/lodash": "^4.14.178",
-		"@types/node": "^16.0.0",
 		"lodash": "^4.17.21",
 		"zod": "^3.12.0"
 	},
 	"devDependencies": {
 		"@carnesen/tsconfig": "0.4.0",
 		"@types/jest": "26.0.23",
+		"@types/lodash": "^4.14.178",
+		"@types/node": "^16.0.0",
 		"eslint": "^7.32.0",
 		"eslint-config-carnesen": "^7.0.0",
 		"jest": "27.0.3",
