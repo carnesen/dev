@@ -21,6 +21,7 @@ export const PROJECT_FILE_NAMES = [
 ] as const;
 
 export const SEMVER_BUMPS = [
+	'prenone',
 	'none',
 	'prerelease',
 	'preminor',

@@ -98,7 +98,8 @@ export class NpmProject extends LocalDirectory {
 				);
 				break;
 			}
-			case 'none': {
+			case 'none':
+			case 'prenone': {
 				// Do nothing
 				break;
 			}
