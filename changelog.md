@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+- Feature: Add semver bump "prenone" which neither bumps the version nor does Git operations like a "prerelease" bump
+
 ## carnesen-dev-0.1.1 (2022-02-25)
 
 - Fix a fatal bug in "locals init" command
