@@ -90,12 +90,14 @@ export class GithubRepo extends LocalDirectory {
 	 * @param moreReleaseSpecs
 	 */
 	public commitTagPushRelease(releaseSpecs: ReleaseSpec[]): void {
-		this.gitForeground('add', '.');
-		this.gitForeground(
-			'commit',
-			'--message',
-			releaseSpecs.map(({ releaseName }) => releaseName).join(' '),
-		);
+		if (this.status()) {
+			this.gitForeground('add', '.');
+			this.gitForeground(
+				'commit',
+				'--message',
+				releaseSpecs.map(({ releaseName }) => releaseName).join(' '),
+			);
+		}
 
 		// Create the release tags and push them
 		for (const { releaseName } of releaseSpecs) {
