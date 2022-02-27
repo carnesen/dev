@@ -1,10 +1,9 @@
 import fs = require('fs');
 import path = require('path');
+import { errorLikeFromException } from '@carnesen/error-like';
 
-import { THIS_PROJECT_DIR } from './constants';
 import { runForeground } from './util/run-foreground';
 import { runBackground } from './util/run-background';
-import { errorLikeFactory } from './util/error-like-factory';
 import { logger } from './util/logger';
 
 export class LocalDirectory {
@@ -25,17 +24,6 @@ export class LocalDirectory {
 		return path.dirname(this.resolvePath());
 	}
 
-	/**
-	 * Copy a file from carnesen/dev to `this` directory
-	 * @param relativePath
-	 */
-	public copyFileToHereFromCarnesenDev(relativePath: string): void {
-		const source = path.join(THIS_PROJECT_DIR, relativePath);
-		const destination = path.join(this.resolvePath(), relativePath);
-		fs.mkdirSync(path.dirname(destination), { recursive: true });
-		fs.copyFileSync(source, destination);
-	}
-
 	protected runBackground(exe: string, ...args: string[]): string {
 		return runBackground(exe, { args, cwd: this.resolvePath() });
 	}
@@ -44,14 +32,14 @@ export class LocalDirectory {
 		runForeground(exe, { args, cwd: this.resolvePath() });
 	}
 
-	protected readFile(fileName: string): string | undefined {
+	public readFile(fileName: string): string | undefined {
 		try {
 			const str = fs.readFileSync(this.resolvePath(fileName), {
 				encoding: 'utf8',
 			});
 			return str;
 		} catch (exception) {
-			const errorLike = errorLikeFactory(exception);
+			const errorLike = errorLikeFromException(exception);
 			if (errorLike.code !== 'ENOENT') {
 				throw exception;
 			}
@@ -62,6 +50,10 @@ export class LocalDirectory {
 	public writeFile(fileName: string, contents: string): void {
 		fs.writeFileSync(this.resolvePath(fileName), contents);
 		logger.log(`Wrote ${fileName}`);
+	}
+
+	public basename(): string {
+		return path.basename(this.resolvePath());
 	}
 
 	protected exists(): boolean {

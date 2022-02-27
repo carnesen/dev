@@ -1,12 +1,14 @@
 import { kebabCase } from 'lodash';
 import fs = require('fs');
+import path = require('path');
 import {
+	CARNESEN_DEV_PROJECT_DIR,
 	CHANGELOG_FILE_NAME,
 	INDENT,
 	LICENSE_FILE_NAME,
 	PACKAGE_JSON_FILE_NAME,
 	PACKAGE_LOCK_FILE_NAME,
-	PROJECT_FILE_NAMES,
+	RELEASABLE_PROJECT_FILE_NAMES,
 	SemverBump,
 } from './constants';
 import { prepareNextChangelog } from './util/prepare-next-changelog';
@@ -18,6 +20,8 @@ import { ReleaseSpec } from './types/release-spec';
 import { LicenseName } from './types/license-name';
 import { prepareNextDateSemver } from './util/prepare-next-date-semver';
 
+type RawPackageJson = Record<string, any>;
+
 export class NpmProject extends LocalDirectory {
 	constructor(dir = '.') {
 		super(dir);
@@ -27,17 +31,17 @@ export class NpmProject extends LocalDirectory {
 		return this.runBackground('npm', ...args);
 	}
 
-	private npmForeground(...args: string[]) {
+	public npmForeground(...args: string[]): void {
 		logger.log(`Running "npm ${args.join(' ')}"`);
 		this.runForeground('npm', ...args);
 	}
 
-	private packageJson(): PackageJson {
+	public packageJson(): PackageJson {
 		const json = this.rawPackageJson();
 		return packageJsonSchema.parse(json);
 	}
 
-	private rawPackageJson(): any {
+	private rawPackageJson(): RawPackageJson {
 		const contents = this.readFile(PACKAGE_JSON_FILE_NAME);
 		if (!contents) {
 			throw new Error(
@@ -56,7 +60,10 @@ export class NpmProject extends LocalDirectory {
 			logger.log(
 				`Found ${PACKAGE_JSON_FILE_NAME} but not ${PACKAGE_LOCK_FILE_NAME}. Removing node_modules.`,
 			);
-			fs.rmSync(this.resolvePath('node_modules'));
+			fs.rmSync(this.resolvePath('node_modules'), {
+				recursive: true,
+				force: true,
+			});
 			this.npmForeground('install', '--no-save');
 		}
 	}
@@ -87,15 +94,9 @@ export class NpmProject extends LocalDirectory {
 		switch (semverBump) {
 			case 'date':
 			case 'predate': {
-				// Read the package.json file type-safely first
-				const pkg = this.packageJson();
-				// Now read the full "raw" one for re-write
-				const rawPkg = this.rawPackageJson();
-				rawPkg.version = prepareNextDateSemver(pkg.version);
-				this.writeFile(
-					PACKAGE_JSON_FILE_NAME,
-					`${JSON.stringify(rawPkg, null, INDENT)}\n`,
-				);
+				this.updatePackageJson((pkg) => ({
+					version: prepareNextDateSemver(pkg.version),
+				}));
 				break;
 			}
 			case 'none':
@@ -136,14 +137,51 @@ export class NpmProject extends LocalDirectory {
 		}
 	}
 
-	public copyProjectFilesTo(dir: string): void {
+	public updatePackageJson(
+		updater: (pkg: RawPackageJson) => RawPackageJson,
+	): void {
+		// Read the package.json file type-safely first
+		this.packageJson();
+		// Now read the full "raw" one for re-write
+		const rawPkg = this.rawPackageJson();
+		const update = updater(rawPkg);
+		for (const [key, value] of Object.entries(update)) {
+			// This preserves the order of the existing keys
+			rawPkg[key] = value;
+		}
+		// Make sure the result is parsable
+		packageJsonSchema.parse(rawPkg);
+		this.writeFile(
+			PACKAGE_JSON_FILE_NAME,
+			`${JSON.stringify(rawPkg, null, INDENT)}\n`,
+		);
+	}
+
+	public copyProjectFilesToDirectory(dir: string): void {
 		const localDir = new LocalDirectory(dir);
 		localDir.ensureExists();
-		for (const fileName of PROJECT_FILE_NAMES) {
+		for (const fileName of RELEASABLE_PROJECT_FILE_NAMES) {
 			fs.copyFileSync(
 				this.resolvePath(fileName),
 				localDir.resolvePath(fileName),
 			);
 		}
 	}
+
+	/**
+	 * Copy a file from carnesen/dev to `this` directory
+	 * @param relativePath
+	 */
+	public copyFileToThisFromCarnesenDev(relativePath: string): void {
+		const source = CARNESEN_DEV_NPM_PROJECT.resolvePath(relativePath);
+		const destination = this.resolvePath(relativePath);
+		if (!fs.existsSync(destination)) {
+			fs.mkdirSync(path.dirname(destination), { recursive: true });
+			fs.copyFileSync(source, destination);
+		}
+	}
 }
+
+export const CARNESEN_DEV_NPM_PROJECT = new NpmProject(
+	CARNESEN_DEV_PROJECT_DIR,
+);

@@ -2,6 +2,7 @@
 	"name": "@carnesen/dev",
 	"version": "0.1.1",
 	"description": "A command-line interface (CLI) for developing @carnesen projects",
+	"private": false,
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"bin": {
@@ -25,21 +26,22 @@
 	},
 	"dependencies": {
 		"@carnesen/cli": "^0.5.2",
+		"@carnesen/error-like": "^0.1.0",
 		"@octokit/rest": "^18.5.5",
 		"lodash": "^4.17.21",
 		"zod": "^3.12.0"
 	},
 	"devDependencies": {
-		"@carnesen/tsconfig": "0.4.0",
+		"@carnesen/tsconfig": "^0.5.0",
 		"@types/jest": "26.0.23",
-		"@types/lodash": "^4.14.178",
-		"@types/node": "^16.0.0",
-		"eslint": "^7.32.0",
-		"eslint-config-carnesen": "^7.0.0",
+		"@types/lodash": "4.14.178",
+		"@types/node": "16.11.26",
+		"eslint": "7.32.0",
+		"eslint-config-carnesen": "7.0.0",
 		"jest": "27.0.3",
 		"ts-jest": "27.0.1",
 		"ts-node": "10.0.0",
-		"typescript": "4.3.2"
+		"typescript": "4.5.5"
 	},
 	"repository": "github:carnesen/dev",
 	"author": "Chris Arnesen",
@@ -48,10 +50,5 @@
 		"url": "https://github.com/carnesen/dev/issues"
 	},
 	"homepage": "https://github.com/carnesen/dev#readme",
-	"files": [
-		"src",
-		"!src/**/__tests__",
-		"lib",
-		"!lib/**/__tests__"
-	]
+	"_files": "Include everything for the benefit of the 'locals init' command"
 }

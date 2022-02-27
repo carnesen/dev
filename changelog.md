@@ -1,10 +1,14 @@
-# **@carnesen/dev changelog
+# **@carnesen/dev** changelog
 
 ## Upcoming
 
 - Feature: Add semver bump "prenone" which neither bumps the version nor does Git operations like a "prerelease" bump
 
 - Fix: In "release", "git commit" fails when there are no changes
+
+- Breaking: Rename command "locals init" as "init" operating on the current working directory
+
+- Feature: In "init" command get fancier with making the files new-project specific
 
 ## carnesen-dev-0.1.1 (2022-02-25)
 
