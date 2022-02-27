@@ -7,8 +7,8 @@ import {
 } from '@carnesen/cli';
 import {
 	CHANGELOG_FILE_NAME,
-	CLI_NAME,
-	PROJECT_FILE_NAMES,
+	CARNESEN_DEV_CLI_NAME,
+	RELEASABLE_PROJECT_FILE_NAMES,
 	SEMVER_BUMPS,
 } from '../constants';
 import { NpmProject } from '../npm-project';
@@ -51,16 +51,16 @@ ${ansi.bold('** Examples **')}
 
 Release a single-project repository package:
 
-$ ${CLI_NAME} ${RELEASE_COMMAND_NAME} --bump minor
+$ ${CARNESEN_DEV_CLI_NAME} ${RELEASE_COMMAND_NAME} --bump minor
 
 Release a GraphQL schema package in a subdirectory "graphql-schema"
 
-$ ${CLI_NAME} ${RELEASE_COMMAND_NAME} graphql-schema --bump minor
+$ ${CARNESEN_DEV_CLI_NAME} ${RELEASE_COMMAND_NAME} graphql-schema --bump minor
 
 Release a monorepo sub-project whose source code is in "libs/http-client" that
 builds to "dist/libs/http-client":
 
-$ ${CLI_NAME} ${RELEASE_COMMAND_NAME} http-client --bump minor --outDir dist --inDir libs
+$ ${CARNESEN_DEV_CLI_NAME} ${RELEASE_COMMAND_NAME} http-client --bump minor --outDir dist --inDir libs
 
 ${ansi.bold('** Steps **')}
 
@@ -78,7 +78,7 @@ In <inDir>/<project> for each <project>:
 * If bump does not start with "pre", update ${CHANGELOG_FILE_NAME} replacing 
 "Upcoming" with the current release name and today's date
 
-* Copy ${PROJECT_FILE_NAMES.join(', ')} to <outDir>/<inDir>/<project>
+* Copy ${RELEASABLE_PROJECT_FILE_NAMES.join(', ')} to <outDir>/<inDir>/<project>
 
 In <outDir>/<inDir>/<project> for each <project>:
 
@@ -105,7 +105,7 @@ If bump does not start with "pre", at the top level of the repository:
 			const outProjectDir = path.resolve(outDir, inDir, projectName);
 			const inNpmProject = new NpmProject(inProjectDir);
 			const releaseSpec = inNpmProject.prepareRelease(semverBump);
-			inNpmProject.copyProjectFilesTo(outProjectDir);
+			inNpmProject.copyProjectFilesToDirectory(outProjectDir);
 			const outNpmProject = new NpmProject(outProjectDir);
 			outNpmProject.npmPublish();
 			return releaseSpec;
