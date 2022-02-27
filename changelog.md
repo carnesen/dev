@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+## carnesen-dev-0.2.0 (2022-02-27)
+
 - Feature: Add semver bump "prenone" which neither bumps the version nor does Git operations like a "prerelease" bump
 
 - Fix: In "release", "git commit" fails when there are no changes
