@@ -13,8 +13,6 @@ const ALL_PROJECT_FILE_NAMES = [
 	'src/index.ts',
 	'.eslintrc.json',
 	'.gitattributes',
-	'.gitignore',
-	'.npmrc',
 	'.nvmrc',
 	'cspell.json',
 	PACKAGE_JSON_FILE_NAME,
@@ -60,6 +58,15 @@ export const initCommand = CliCommand({
 			'carnesen/dev',
 			`carnesen/${npmProject.basename()}`,
 		);
+		// Since "npm publish" never includes .gitignore we need to jump through
+		// hoops to put a copy of it in the package
+		// https://github.com/npm/npm/issues/3763
+
+		for (const fileName of ['.gitignore', '.npmrc']) {
+			const nextFileContents =
+				CARNESEN_DEV_NPM_PROJECT.readFile(`${fileName}.copy`) || '';
+			npmProject.writeFile(fileName, nextFileContents);
+		}
 		npmProject.writeFile(README_FILE_NAME, nextReadme);
 		npmProject.updatePackageJson(() => ({
 			name: `@carnesen/${npmProject.basename()}`,

@@ -1,5 +1,9 @@
 ### Node ###
 
+# Workaround https://github.com/npm/npm/issues/3763
+.gitignore.copy
+.npmrc.copy
+
 /coverage
 
 # Logs
@@ -133,6 +137,8 @@ build/
 built/
 lib/
 tmp/
+package/
+*.tgz
 
 # Serverless generated files
 .serverless/

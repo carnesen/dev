@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+- Fix "init" command in published package. Several files are excluded from the published package by npm which makes it difficult to use it as a template. Ref: https://github.com/npm/npm/issues/3763.
+
 ## carnesen-dev-0.2.0 (2022-02-27)
 
 - Feature: Add semver bump "prenone" which neither bumps the version nor does Git operations like a "prerelease" bump
