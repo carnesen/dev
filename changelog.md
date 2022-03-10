@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+## carnesen-dev-0.2.1 (2022-03-09)
+
 - Fix "init" command in published package. Several files are excluded from the published package by npm which makes it difficult to use it as a template. Ref: https://github.com/npm/npm/issues/3763.
 
 ## carnesen-dev-0.2.0 (2022-02-27)
