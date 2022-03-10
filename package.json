@@ -15,13 +15,13 @@
 		"access": "public"
 	},
 	"scripts": {
-		"build": "rm -rf lib && tsc",
+		"build": "./scripts/build.sh",
 		"dev": "ts-node src",
 		"lint": "eslint --ext .ts src",
 		"lint-fix": "npm run lint -- --fix",
 		"release": "./scripts/release.sh",
 		"start": "node lib",
-		"test": "npm run lint && npm run build && npm run unit-test",
+		"test": "./scripts/test.sh",
 		"unit-test": "NODE_ENV=test jest src"
 	},
 	"dependencies": {
