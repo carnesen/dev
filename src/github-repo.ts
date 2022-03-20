@@ -136,7 +136,7 @@ export class GithubRepo extends LocalDirectory {
 
 	public static readonly DefaultBranches = ['master', 'main'];
 
-	public static Remotes = async (): Promise<GithubRepo[]> => {
+	public static carnesenRemotes = async (): Promise<GithubRepo[]> => {
 		const octokit = new Octokit();
 		const repos: GithubRepo[] = [];
 		for (const username of USERNAMES) {
@@ -148,7 +148,7 @@ export class GithubRepo extends LocalDirectory {
 		return repos;
 	};
 
-	public static Locals = (): GithubRepo[] => {
+	public static allLocals = (): GithubRepo[] => {
 		const repos: GithubRepo[] = [];
 		if (!fs.existsSync(GithubRepo.BaseDir)) {
 			return repos;
