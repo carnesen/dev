@@ -2,7 +2,7 @@ import { CliCommand, CliStringChoiceArgGroup } from '@carnesen/cli';
 import { SEMVER_BUMPS } from '../constants';
 import { NpmProject } from '../npm-project';
 
-export const prepareReleaseCommand = CliCommand({
+export const prepareReleaseCliCommand = CliCommand({
 	name: 'prepare-release',
 	hidden: true,
 	namedArgGroups: {

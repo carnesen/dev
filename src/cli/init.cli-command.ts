@@ -20,7 +20,7 @@ const ALL_PROJECT_FILE_NAMES = [
 	'tsconfig.json',
 ].sort();
 
-export const initCommand = CliCommand({
+export const initCliCommand = CliCommand({
 	name: 'init',
 	description() {
 		const carnesenDevPackageName = CARNESEN_DEV_NPM_PROJECT.packageJson().name;
@@ -41,12 +41,12 @@ export const initCommand = CliCommand({
 		Run "npm install ${carnesenDevPackageName}"
 		`;
 	},
-	async action({ console }) {
+	action({ console }) {
 		const npmProject = new NpmProject(process.cwd());
 		console.log(`Copying files`);
 		for (const relativePath of ALL_PROJECT_FILE_NAMES) {
 			console.log(`- ${relativePath}`);
-			await npmProject.copyFileToThisFromCarnesenDev(relativePath);
+			npmProject.copyFileToThisFromCarnesenDev(relativePath);
 		}
 		npmProject.writeLicense('mit');
 		npmProject.writeFile(CHANGELOG_FILE_NAME, INITIAL_CHANGELOG);
