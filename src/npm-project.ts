@@ -20,7 +20,7 @@ import { ReleaseSpec } from './types/release-spec';
 import { LicenseName } from './types/license-name';
 import { prepareNextDateSemver } from './util/prepare-next-date-semver';
 
-type RawPackageJson = Record<string, any>;
+type RawPackageJson = Record<string, unknown>;
 
 export class NpmProject extends LocalDirectory {
 	constructor(dir = '.') {
@@ -95,7 +95,7 @@ export class NpmProject extends LocalDirectory {
 			case 'date':
 			case 'predate': {
 				this.updatePackageJson((pkg) => ({
-					version: prepareNextDateSemver(pkg.version),
+					version: prepareNextDateSemver(pkg.version as string),
 				}));
 				break;
 			}
@@ -138,13 +138,17 @@ export class NpmProject extends LocalDirectory {
 	}
 
 	public updatePackageJson(
-		updater: (pkg: RawPackageJson) => RawPackageJson,
+		updater: (
+			pkg: PackageJson & Record<string, unknown>,
+		) => Partial<PackageJson> & Record<string, unknown>,
 	): void {
 		// Read the package.json file type-safely first
 		this.packageJson();
 		// Now read the full "raw" one for re-write
 		const rawPkg = this.rawPackageJson();
-		const update = updater(rawPkg);
+		// Make sure initial payloadis parsable
+		packageJsonSchema.parse(rawPkg);
+		const update = updater(rawPkg as PackageJson & Record<string, unknown>);
 		for (const [key, value] of Object.entries(update)) {
 			// This preserves the order of the existing keys
 			rawPkg[key] = value;
