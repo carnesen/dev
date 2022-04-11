@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+## carnesen-dev-0.3.0 (2022-04-11)
+
 - Feature: "clone" for cloning arbitrary repo off of GitHub by its id e.g. "carnesen-dev clone colinhacks/zod".
 
 - Breaking: Remove commands "locals list" "remotes list". Rename "locals status" --> "status", "remotes clone" --> "clone-carnesens"
