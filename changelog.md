@@ -2,6 +2,10 @@
 
 ## Upcoming
 
+- Feature: "clone" for cloning arbitrary repo off of GitHub by its id e.g. "carnesen-dev clone colinhacks/zod".
+
+- Breaking: Remove commands "locals list" "remotes list". Rename "locals status" --> "status", "remotes clone" --> "clone-carnesens"
+
 ## carnesen-dev-0.2.1 (2022-03-09)
 
 - Fix "init" command in published package. Several files are excluded from the published package by npm which makes it difficult to use it as a template. Ref: https://github.com/npm/npm/issues/3763.
