@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+- Fix: `pr` command fails when changes have already been committed (https://github.com/carnesen/dev/issues/33)
+
 ## carnesen-dev-0.3.0 (2022-04-11)
 
 - Feature: "clone" for cloning arbitrary repo off of GitHub by its id e.g. "carnesen-dev clone colinhacks/zod".

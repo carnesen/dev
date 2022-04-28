@@ -65,8 +65,10 @@ export class GithubRepo extends LocalDirectory {
 			const newBranch = `ca-${LocalToday()}`;
 			this.gitForeground('switch', '-c', newBranch);
 		}
-		this.gitForeground('add', '.');
-		this.gitForeground('commit');
+		if (this.status()) {
+			this.gitForeground('add', '.');
+			this.gitForeground('commit');
+		}
 
 		this.ghForeground('pr', 'create', '--fill');
 
