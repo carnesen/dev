@@ -1,4 +1,4 @@
-import { Cli, CliCommandGroup } from '@carnesen/cli';
+import { c } from '@carnesen/cli';
 
 import { releaseCommand } from './release.cli-command';
 import { prCliCommand } from './pr.cli-command';
@@ -10,7 +10,7 @@ import { statusCliCommand } from './status.cli-command';
 import { cloneCliCommand } from './clone.cli-command';
 import { cloneCarnesenCliCommand } from './clone-carnesens.cli-command';
 
-const rootBranch = CliCommandGroup({
+const rootBranch = c.commandGroup({
 	name: CARNESEN_DEV_CLI_NAME,
 	description: 'A command-line interface (CLI) for @carnesen projects',
 	subcommands: [
@@ -25,4 +25,4 @@ const rootBranch = CliCommandGroup({
 	],
 });
 
-export const cli = Cli(rootBranch);
+export const cli = c.cli(rootBranch);

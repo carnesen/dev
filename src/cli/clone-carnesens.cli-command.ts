@@ -1,7 +1,7 @@
-import { CliCommand } from '@carnesen/cli';
+import { c } from '@carnesen/cli';
 import { GithubRepo } from '../github-repo';
 
-export const cloneCarnesenCliCommand = CliCommand({
+export const cloneCarnesenCliCommand = c.command({
 	name: 'clone-carnesens',
 	description: 'Clone @carnesen repositories',
 	async action() {

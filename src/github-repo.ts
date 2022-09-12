@@ -13,7 +13,7 @@ import { sleep } from './util/sleep';
 import { ReleaseSpec } from './types/release-spec';
 
 export class GithubRepo extends LocalDirectory {
-	constructor(public readonly id: string) {
+	public constructor(public readonly id: string) {
 		super(path.join(GithubRepo.BaseDir, ...id.split('/')));
 	}
 

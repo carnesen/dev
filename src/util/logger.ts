@@ -1,3 +1,3 @@
-import { CliConsole } from '@carnesen/cli/lib/cli-console';
+import { CCliConsoleLogger } from '@carnesen/cli';
 
-export const logger = CliConsole();
+export const logger = CCliConsoleLogger.create();

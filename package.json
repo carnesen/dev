@@ -25,23 +25,23 @@
 		"unit-test": "NODE_ENV=test jest src"
 	},
 	"dependencies": {
-		"@carnesen/cli": "^0.5.2",
-		"@carnesen/error-like": "^0.1.0",
-		"@octokit/rest": "^18.5.5",
+		"@carnesen/cli": "^0.8.0",
+		"@carnesen/error-like": "^0.2.0",
+		"@octokit/rest": "^19.0.4",
 		"lodash": "^4.17.21",
-		"zod": "^3.12.0"
+		"zod": "^3.19.1"
 	},
 	"devDependencies": {
 		"@carnesen/tsconfig": "^0.5.0",
-		"@types/jest": "26.0.23",
-		"@types/lodash": "4.14.178",
-		"@types/node": "16.11.26",
-		"eslint": "^8.14.0",
-		"eslint-config-carnesen": "^9.0.0",
-		"jest": "27.0.3",
-		"ts-jest": "27.0.1",
-		"ts-node": "10.0.0",
-		"typescript": "4.5.5"
+		"@types/jest": "29.0.1",
+		"@types/lodash": "4.14.185",
+		"@types/node": "18.7.16",
+		"eslint": "^8.23.0",
+		"eslint-config-carnesen": "^11.0.0",
+		"jest": "29.0.3",
+		"ts-jest": "29.0.0",
+		"ts-node": "10.9.1",
+		"typescript": "4.8.3"
 	},
 	"repository": "github:carnesen/dev",
 	"author": "Chris Arnesen",

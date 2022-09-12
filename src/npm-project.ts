@@ -23,7 +23,7 @@ import { prepareNextDateSemver } from './util/prepare-next-date-semver';
 type RawPackageJson = Record<string, unknown>;
 
 export class NpmProject extends LocalDirectory {
-	constructor(dir = '.') {
+	public constructor(dir = '.') {
 		super(dir);
 	}
 
@@ -94,8 +94,8 @@ export class NpmProject extends LocalDirectory {
 		switch (semverBump) {
 			case 'date':
 			case 'predate': {
-				this.updatePackageJson((pkg) => ({
-					version: prepareNextDateSemver(pkg.version as string),
+				this.updatePackageJson((current) => ({
+					version: prepareNextDateSemver(current.version as string),
 				}));
 				break;
 			}
@@ -146,7 +146,7 @@ export class NpmProject extends LocalDirectory {
 		this.packageJson();
 		// Now read the full "raw" one for re-write
 		const rawPkg = this.rawPackageJson();
-		// Make sure initial payloadis parsable
+		// Make sure initial payload is parsable
 		packageJsonSchema.parse(rawPkg);
 		const update = updater(rawPkg as PackageJson & Record<string, unknown>);
 		for (const [key, value] of Object.entries(update)) {
@@ -177,15 +177,13 @@ export class NpmProject extends LocalDirectory {
 	 * @param relativePath
 	 */
 	public copyFileToThisFromCarnesenDev(relativePath: string): void {
-		const source = CARNESEN_DEV_NPM_PROJECT.resolvePath(relativePath);
+		const source = NpmProject.carnesenDev.resolvePath(relativePath);
 		const destination = this.resolvePath(relativePath);
 		if (!fs.existsSync(destination)) {
 			fs.mkdirSync(path.dirname(destination), { recursive: true });
 			fs.copyFileSync(source, destination);
 		}
 	}
-}
 
-export const CARNESEN_DEV_NPM_PROJECT = new NpmProject(
-	CARNESEN_DEV_PROJECT_DIR,
-);
+	public static carnesenDev = new NpmProject(CARNESEN_DEV_PROJECT_DIR);
+}

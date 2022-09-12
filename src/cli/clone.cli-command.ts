@@ -1,14 +1,13 @@
-import { CliCommand, CliStringArgGroup } from '@carnesen/cli';
+import { c } from '@carnesen/cli';
 
 import { GithubRepo } from '../github-repo';
 
-export const cloneCliCommand = CliCommand({
+export const cloneCliCommand = c.command({
 	name: 'clone',
 	description: 'Clone a repo by its GitHub ID',
-	positionalArgGroup: CliStringArgGroup({
+	positionalArgGroup: c.string({
 		placeholder: '<id>',
 		description: 'GitHub repository identifier e.g. carnesen/cli',
-		required: true,
 	}),
 	action({ positionalValue: id }) {
 		const repo = new GithubRepo(id);

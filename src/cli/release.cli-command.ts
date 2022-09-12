@@ -1,10 +1,5 @@
 import path = require('path');
-import {
-	CliCommand,
-	CliStringArgGroup,
-	CliStringArrayArgGroup,
-	CliStringChoiceArgGroup,
-} from '@carnesen/cli';
+import { c } from '@carnesen/cli';
 import {
 	CHANGELOG_FILE_NAME,
 	CARNESEN_DEV_CLI_NAME,
@@ -16,38 +11,40 @@ import { GithubRepo } from '../github-repo';
 
 const RELEASE_COMMAND_NAME = 'release';
 
-export const releaseCommand = CliCommand({
+export const releaseCommand = c.command({
 	name: RELEASE_COMMAND_NAME,
-	positionalArgGroup: CliStringArrayArgGroup({
+	positionalArgGroup: c.stringArray({
 		description: `
       Zero or more project subdirectory names (Default: ".")
       `,
 		placeholder: '[<project0> ...]',
 	}),
 	namedArgGroups: {
-		semverBump: CliStringChoiceArgGroup({
+		semverBump: c.stringChoice({
 			choices: SEMVER_BUMPS,
 			description: `
         SemVer segment to bump for the release
       `,
-			required: true,
 		}),
-		outDir: CliStringArgGroup({
+		outDir: c.string({
 			description: `
-        Project-relative path of the subdirectory containing built output project (Default: ".")
-        `,
+				Project-relative path of the subdirectory containing 
+				built output project (Default: ".")
+			`,
+			optional: true,
 		}),
-		inDir: CliStringArgGroup({
+		inDir: c.string({
 			description: `
-        Path of the source input subdirectory project (Default: ".")
-        `,
+				Path of the source input subdirectory project (Default: ".")
+			`,
+			optional: true,
 		}),
 	},
-	description({ ansi }) {
+	description({ color }) {
 		return `
 Release one or more packages using npm and git
 
-${ansi.bold('** Examples **')}
+${color.bold('** Examples **')}
 
 Release a single-project repository package:
 
@@ -62,7 +59,7 @@ builds to "dist/libs/http-client":
 
 $ ${CARNESEN_DEV_CLI_NAME} ${RELEASE_COMMAND_NAME} http-client --bump minor --outDir dist --inDir libs
 
-${ansi.bold('** Steps **')}
+${color.bold('** Steps **')}
 
 At the top level of the repository:
 

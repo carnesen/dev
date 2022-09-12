@@ -1,11 +1,11 @@
-import { CliCommand } from '@carnesen/cli';
+import { c } from '@carnesen/cli';
 import {
 	CHANGELOG_FILE_NAME,
 	LICENSE_FILE_NAME,
 	PACKAGE_JSON_FILE_NAME,
 	README_FILE_NAME,
 } from '../constants';
-import { CARNESEN_DEV_NPM_PROJECT, NpmProject } from '../npm-project';
+import { NpmProject } from '../npm-project';
 import { INITIAL_CHANGELOG } from '../util/prepare-next-changelog';
 
 const ALL_PROJECT_FILE_NAMES = [
@@ -20,10 +20,10 @@ const ALL_PROJECT_FILE_NAMES = [
 	'tsconfig.json',
 ].sort();
 
-export const initCliCommand = CliCommand({
+export const initCliCommand = c.command({
 	name: 'init',
 	description() {
-		const carnesenDevPackageName = CARNESEN_DEV_NPM_PROJECT.packageJson().name;
+		const carnesenDevPackageName = NpmProject.carnesenDev.packageJson().name;
 		return `Initialize the current working directory as a @carnesen project
 		
 		Copy over the following files from ${carnesenDevPackageName}:
@@ -41,16 +41,16 @@ export const initCliCommand = CliCommand({
 		Run "npm install ${carnesenDevPackageName}"
 		`;
 	},
-	action({ console }) {
+	action({ logger }) {
 		const npmProject = new NpmProject(process.cwd());
-		console.log(`Copying files`);
+		logger.log(`Copying files`);
 		for (const relativePath of ALL_PROJECT_FILE_NAMES) {
-			console.log(`- ${relativePath}`);
+			logger.log(`- ${relativePath}`);
 			npmProject.copyFileToThisFromCarnesenDev(relativePath);
 		}
 		npmProject.writeLicense('mit');
 		npmProject.writeFile(CHANGELOG_FILE_NAME, INITIAL_CHANGELOG);
-		const readme = CARNESEN_DEV_NPM_PROJECT.readFile(README_FILE_NAME);
+		const readme = NpmProject.carnesenDev.readFile(README_FILE_NAME);
 		if (!readme) {
 			throw new Error('Expected readme');
 		}
@@ -64,7 +64,7 @@ export const initCliCommand = CliCommand({
 
 		for (const fileName of ['.gitignore', '.npmrc']) {
 			const nextFileContents =
-				CARNESEN_DEV_NPM_PROJECT.readFile(`${fileName}.copy`) || '';
+				NpmProject.carnesenDev.readFile(`${fileName}.copy`) || '';
 			npmProject.writeFile(fileName, nextFileContents);
 		}
 		npmProject.writeFile(README_FILE_NAME, nextReadme);
@@ -88,7 +88,7 @@ export const initCliCommand = CliCommand({
 		npmProject.npmForeground(
 			'install',
 			'--save-dev',
-			CARNESEN_DEV_NPM_PROJECT.packageJson().name,
+			NpmProject.carnesenDev.packageJson().name,
 		);
 	},
 });
