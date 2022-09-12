@@ -18,6 +18,7 @@ export const releaseCommand = c.command({
       Zero or more project subdirectory names (Default: ".")
       `,
 		placeholder: '[<project0> ...]',
+		optional: true,
 	}),
 	namedArgGroups: {
 		semverBump: c.stringChoice({

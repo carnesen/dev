@@ -2,6 +2,10 @@
 
 ## Upcoming
 
+## carnesen-dev-0.4.0 (2022-09-11)
+
+
+
 ## carnesen-dev-0.3.1 (2022-04-28)
 
 - Fix: `pr` command fails when changes have already been committed (https://github.com/carnesen/dev/issues/33)
