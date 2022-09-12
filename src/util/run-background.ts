@@ -1,5 +1,5 @@
 import cp = require('child_process');
-import { CliTerseError, CliAnsi } from '@carnesen/cli';
+import { CCliTerseError } from '@carnesen/cli';
 export type RunSubprocessOptions = {
 	/** Arguments passed to the program invocation */
 	args?: string[];
@@ -17,7 +17,6 @@ export function runBackground(
 	options: RunSubprocessOptions = {},
 ): string {
 	const { args = [], cwd } = options;
-	const ansi = CliAnsi();
 	const { error, status, stdout, stderr } = cp.spawnSync(exe, args, {
 		cwd,
 		encoding: 'utf8',
@@ -27,9 +26,7 @@ export function runBackground(
 	}
 	const trimmedStdout = stdout.trim();
 	if (status) {
-		let message = `Process exited with non-zero status code ${ansi.bold(
-			String(status),
-		)}`;
+		let message = `Process exited with non-zero status code ${String(status)}`;
 		message += '\n\n';
 		message += `$ ${exe} ${args.join(' ')}`;
 		message += '\n\n';
@@ -44,7 +41,7 @@ export function runBackground(
 			message += '\n\n';
 			message += trimmedStdout;
 		}
-		throw new CliTerseError(message);
+		throw new CCliTerseError(message);
 	}
 	return trimmedStdout;
 }

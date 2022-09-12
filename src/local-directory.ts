@@ -7,7 +7,7 @@ import { runBackground } from './util/run-background';
 import { logger } from './util/logger';
 
 export class LocalDirectory {
-	constructor(protected readonly dir: string) {}
+	public constructor(protected readonly dir: string) {}
 
 	/**
 	 * Get the fully qualified path of this local directory or one if its
