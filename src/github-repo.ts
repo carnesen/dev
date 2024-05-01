@@ -146,6 +146,8 @@ export class GithubRepo extends LocalDirectory {
 			for (const datum of data) {
 				repos.push(new GithubRepo(datum.full_name));
 			}
+			repos.push(new GithubRepo('carnesen/cryptocurrency-tax-calculator'));
+			repos.push(new GithubRepo('carnesen/gark-household-info'));
 		}
 		return repos;
 	};
